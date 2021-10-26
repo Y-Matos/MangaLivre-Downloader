@@ -1,8 +1,8 @@
 from requests_html import HTMLSession
 import json
 from time import perf_counter
-from classeSelWire import criarDriver
-from classeDownloader import downloadManga
+from seleniumWebDriver import criarDriver
+from downloaderFunctions import downloadManga
 from getPages import getChapterPages
 
 def getChaptersFast(url):
