@@ -2,7 +2,7 @@ import json
 import os
 from time import perf_counter
 from requests_html import HTMLSession
-from classeSelWire import criarDriver
+from seleniumWebDriver import criarDriver
 from getPages import getChapterPages
 
 # Baixa todos os capitulos do manga (Se não for passada um capitulo final). 
