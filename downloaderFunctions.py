@@ -6,17 +6,18 @@ from seleniumWebDriver import criarDriver
 from getPages import getChapterPages
 
 # Baixa todos os capitulos do manga (Se não for passada um capitulo final). 
-def downloadManga(lista_capitulos, index_inicial = 1, index_final = None): 
+def downloadManga(manga_info, index_inicial = 1, index_final = None): 
     driver = criarDriver()
     session = HTMLSession()
 
-    nome_manga = lista_capitulos[0]['Link_Capitulo'].split('/')[4]
-    if index_final == None : index_final = len(lista_capitulos)
+    nome_manga = manga_info["manga_name"]
+    nome_manga_url = manga_info["url_manga_name"]
 
-    for capitulo in lista_capitulos[index_inicial-1:index_final]:
+
+    for capitulo in manga_info["chapters"][index_inicial-1:index_final]:
         num_capitulo = capitulo['Link_Capitulo'].split('/')[7]
 
-        json_paginas = json.loads(getChapterPages(capitulo, driver, nome_manga))
+        json_paginas = json.loads(getChapterPages(capitulo, driver, nome_manga_url))
 
         pasta_capitulo = criarNovaPasta(nome_manga,num_capitulo)
 
