@@ -4,6 +4,7 @@ from time import perf_counter
 from seleniumWebDriver import criarDriver
 from downloaderFunctions import downloadManga
 from getPages import getChapterPages
+import mangaINFO
 
 def getChaptersFast(url):
 
@@ -19,16 +20,16 @@ def getChaptersFast(url):
     for index, capitulo in enumerate(reversed(all_chapters_json)):
         for item in capitulo['releases']:
             info_capitulo = {
-            "Número_Capitulo" : capitulo['number'],
-            "Nome_Capitulo" : capitulo['title'],
-            "ID_Capitulo" : capitulo['id_release'],
-            "Link_Capitulo" : f"https://mangalivre.net{capitulo['releases'][item]['link']}",
+            "chapter_number" : capitulo['number'],
+            "chapter_name" : capitulo['title'],
+            "chapter_id" : capitulo['id_release'],
+            "chapter_url" : f"https://mangalivre.net{capitulo['releases'][item]['link']}",
             "chapter_index": index+1
             }
         lista_capitulos.append(info_capitulo.copy())
 
-    with open('ListaCapitulosFast.json','w',encoding='utf-8') as json_capitulos:
-        json.dump(lista_capitulos[::1], json_capitulos, ensure_ascii=False, indent=4)
+    #with open('ListaCapitulosFast.json','w',encoding='utf-8') as json_capitulos:
+    #    json.dump(lista_capitulos[::1], json_capitulos, ensure_ascii=False, indent=4)
 
     return json.dumps(lista_capitulos[::1], ensure_ascii=False, indent=4)   # Retornar JSON OU STRING ????
 
@@ -49,7 +50,6 @@ def getChaptersFull(id_manga):
     
     sessao = HTMLSession()
     response = sessao.get(url).text
-    #response = getPageHTML(url).text
 
     lista_capitulos = []
     while response != "{\"chapters\":false}":
@@ -71,8 +71,8 @@ def getChaptersFull(id_manga):
         url = f'https://mangalivre.net/series/chapters_list.json?page={page}&id_serie={id_manga}'
         response = sessao.get(url).text   
     
-    with open('ListaCapitulosFull.json','w',encoding='utf-8') as json_capitulos:
-        json.dump(lista_capitulos[::1], json_capitulos, ensure_ascii=False, indent=4)
+    #with open('ListaCapitulosFull.json','w',encoding='utf-8') as json_capitulos:
+    #    json.dump(lista_capitulos[::1], json_capitulos, ensure_ascii=False, indent=4)
 
     return json.dumps(lista_capitulos[::1], ensure_ascii=False, indent=4)
 
@@ -81,8 +81,12 @@ if __name__ == '__main__':
     #print(getChaptersFast(url))
     #print(getChaptersFull(13))
 
-    listaCapitulos = json.loads(getChaptersFastByMangaId(1036))
-    downloadManga(listaCapitulos, index_inicial=2, index_final=2)
+    #listaCapitulos = json.loads(getChaptersFastByMangaId(1036))
+    #downloadManga(listaCapitulos, index_inicial=2, index_final=2)
+
+    one_punch_man = mangaINFO.manga(1036)
+    one_punch_man.get_chapter_info(43700)
+    #downloadManga(one_punch_man.info, index_inicial=2, index_final=2)
 
     # info_cap_1 = json.loads(getChaptersFastByMangaId(1036))[0]
     # print(info_cap_1)
