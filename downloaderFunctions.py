@@ -15,7 +15,7 @@ def downloadManga(manga_info, index_inicial = 1, index_final = None):
 
 
     for capitulo in manga_info["chapters"][index_inicial-1:index_final]:
-        num_capitulo = capitulo['Link_Capitulo'].split('/')[7]
+        num_capitulo = capitulo['chapter_url'].split('/')[7]
 
         json_paginas = json.loads(getChapterPages(capitulo, driver, nome_manga_url))
 
