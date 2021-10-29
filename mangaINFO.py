@@ -1,4 +1,5 @@
 import json
+import os
 from getChapters import getChaptersFastByMangaId
 from getPages import getChapterPages
 from seleniumWebDriver import criarDriver
@@ -10,7 +11,7 @@ class manga:
             "manga_name" : None,
             "url_manga_name": None,
             "manga_url" : None,
-            "num_chapters" : None,
+            "chapter_count" : None,
             "chapters" : [],
         }
         self.get_manga_info(manga_id)
@@ -21,7 +22,7 @@ class manga:
         self.info["manga_name"] = json_capitulos[0]['chapter_url'].split('/')[4].replace("-"," ").title()
         self.info["url_manga_name"] = json_capitulos[0]['chapter_url'].split('/')[4]
         self.info["manga_url"] = f"https://mangalivre.net/manga/{json_capitulos[0]['chapter_url'].split('/')[4]}/{manga_id}"
-        self.info["num_chapters"] = len(json_capitulos)
+        self.info["chapter_count"] = len(json_capitulos)
         self.info["chapters"] = [chapter for chapter in json_capitulos]
 
     def get_chapter_info(self, chapter_id):
@@ -49,8 +50,20 @@ class manga:
         print(json.dumps(self.info, ensure_ascii=False, indent=4))
 
     def save_info(self):
-        with open(f"{self.info['manga_name']}_INFO.json",'w',encoding='utf-8') as json_Manga:
+        pasta_atual = os.getcwd()
+        pasta_info = f"{pasta_atual}\Info Mangas\\"
+
+        try:
+            os.makedirs(pasta_info)
+            print(f'Pasta criada com sucesso | Caminho: {pasta_info}')
+        except OSError as error:
+            pass
+            # print(error)
+            # print("Pasta já existe, prosseguindo...")
+        
+        with open(f"{pasta_info}{self.info['manga_name']}_INFO.json",'w',encoding='utf-8') as json_Manga:
             json.dump(self.info, json_Manga, ensure_ascii=False, indent=4)
+            print(f"Info.json do Manga {self.info['manga_name']} salvo com sucesso.")
     
 if __name__ == '__main__':
     mangaAleatorio = manga(1036)
