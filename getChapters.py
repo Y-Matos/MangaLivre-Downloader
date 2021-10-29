@@ -1,10 +1,5 @@
 from requests_html import HTMLSession
 import json
-from time import perf_counter
-from seleniumWebDriver import criarDriver
-from downloaderFunctions import downloadManga
-from getPages import getChapterPages
-import mangaINFO
 
 def getChaptersFast(url):
 
@@ -12,8 +7,10 @@ def getChaptersFast(url):
     source = session.get(url).content
     source = session.get(url) #.content
     
-    #source = getPageHTML(url)
-    script_tag = source.html.find('script')[22].text.strip()
+    script_tag = source.html.find("[src^='/mangazord_lib/js/reader.min'] + script")[0].text.strip()
+    
+
+    #script_tag = source.html.find('script')[22].text.strip()
     all_chapters_json = json.loads(script_tag[script_tag.find('['):script_tag.rfind(']')+1])
 
     lista_capitulos = []
@@ -77,22 +74,4 @@ def getChaptersFull(id_manga):
     return json.dumps(lista_capitulos[::1], ensure_ascii=False, indent=4)
 
 if __name__ == '__main__':
-    start = perf_counter()
-    #print(getChaptersFast(url))
-    #print(getChaptersFull(13))
-
-    #listaCapitulos = json.loads(getChaptersFastByMangaId(1036))
-    #downloadManga(listaCapitulos, index_inicial=2, index_final=2)
-
-    one_punch_man = mangaINFO.manga(1036)
-    one_punch_man.get_chapter_info(43700)
-    #downloadManga(one_punch_man.info, index_inicial=2, index_final=2)
-
-    # info_cap_1 = json.loads(getChaptersFastByMangaId(1036))[0]
-    # print(info_cap_1)
-    # paginas_cap = getChapterPages(info_cap_1,criarDriver(),'one-punch-man')
-    # print(paginas_cap)
-
-    end = perf_counter()
-    total_time = end - start
-    print(f'O programa demorou {total_time}s para rodar completamente.')
+    pass
