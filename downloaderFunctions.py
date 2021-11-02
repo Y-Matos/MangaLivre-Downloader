@@ -1,7 +1,7 @@
 import json
-import os
 from time import perf_counter
 from requests_html import HTMLSession
+from createFolders import criar_nova_pasta_manga
 from seleniumWebDriver import criarDriver
 from getPages import getChapterPages
 
@@ -19,7 +19,7 @@ def downloadManga(manga_info, index_inicial = 1, index_final = None):
 
         json_paginas = json.loads(getChapterPages(capitulo, driver, nome_manga_url))
 
-        pasta_capitulo = criarNovaPasta(nome_manga,num_capitulo)
+        pasta_capitulo = criar_nova_pasta_manga(nome_manga,num_capitulo)
 
         downloadChapter(json_paginas, session, pasta_capitulo)
     
@@ -52,22 +52,6 @@ def downloadPage(url_imagem, html_session, pasta_destino):
     else:
         with open(f'{pasta_destino}{nome_pagina}', 'wb') as handler:
             handler.write(img_data)
-# -------------------------------------------------------------------
-
-# Checa e cria pasta para armazenar as paginas baixadas do capitulo 
-def criarNovaPasta(nome_manga, num_capitulo):
-    
-    pasta_atual = os.getcwd()
-    nova_pasta = f'{pasta_atual}\{nome_manga}\{num_capitulo}\\'
-
-    try:
-        os.makedirs(nova_pasta)
-        print(f'Pasta {num_capitulo} criada com sucesso | Caminho: {nova_pasta}')
-    except OSError as error:
-        print(error)
-    
-    return nova_pasta      
-
 # -------------------------------------------------------------------
 
 if __name__ == "__main__":

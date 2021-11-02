@@ -1,9 +1,10 @@
 import json
-import os
+from createFolders import criar_nova_pasta_info
 from getChapters import getChaptersFastByMangaId
 from getPages import getChapterPages
 from searchManga import searchMangaByName
 from seleniumWebDriver import criarDriver
+
 
 class manga:
     def __init__(self, /, manga_id):
@@ -34,7 +35,7 @@ class manga:
         self.info["chapters"] = [chapter for chapter in json_capitulos]
 
     def get_manga_searchable_info(self, manga_name):
-        returned_info = json.loads(searchMangaByName(manga_name, exact_match=True))[0]        
+        returned_info = json.loads(searchMangaByName(manga_name, exact_match=True))
         self.info["score"]= returned_info["score"]
         self.info["author"]= returned_info["author"]
         self.info["artist"]= returned_info["artist"]
@@ -54,32 +55,24 @@ class manga:
             "pages": []            
         }
 
-        chapter_info["pages"] = getChapterPages(self.info["chapters"][chapter_index], criarDriver())
+        chapter_info["pages"] = json.loads(getChapterPages(chapter_info, criarDriver()))
         
-        #print(self.info["chapters"][chapter_index])
-        print(json.dumps(chapter_info, ensure_ascii=False, indent=4))
-        
-        with open(f"{self.info['manga_name']}_{chapter_info['chapter_number']}_INFO.json",'w',encoding='utf-8') as json_Manga:
+        pasta_info = criar_nova_pasta_info(self.info["manga_name"])
+
+        with open(f"{pasta_info}{self.info['manga_name']}_Capitulo_{chapter_info['chapter_number']}_INFO.json",'w',encoding='utf-8') as json_Manga:
             json.dump(chapter_info, json_Manga, ensure_ascii=False, indent=4)
 
     def print_info(self): 
         print(json.dumps(self.info, ensure_ascii=False, indent=4))
 
     def save_info(self):
-        pasta_atual = os.getcwd()
-        pasta_info = f"{pasta_atual}\Info Mangas\\"
-
-        try:
-            os.makedirs(pasta_info)
-            print(f'Pasta criada com sucesso | Caminho: {pasta_info}')
-        except OSError as error:
-            pass
-            # print(error)
-            # print("Pasta já existe, prosseguindo...")
+        manga_name = self.info["manga_name"]
+        pasta_info = criar_nova_pasta_info(manga_name)
         
         with open(f"{pasta_info}{self.info['manga_name']}_INFO.json",'w',encoding='utf-8') as json_Manga:
             json.dump(self.info, json_Manga, ensure_ascii=False, indent=4)
             print(f"Info.json do mangá {self.info['manga_name']} salvo com sucesso.")
+
     
 if __name__ == '__main__':
     pass
